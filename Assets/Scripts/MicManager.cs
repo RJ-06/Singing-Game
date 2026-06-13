@@ -22,9 +22,12 @@ public class MicManager : MonoBehaviour
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
-    void Start()
+    private void Awake()
     {
         instance = this;
+    }
+    void Start()
+    {
         audioSource = GetComponent<AudioSource>();
 
         sampleRate = AudioSettings.outputSampleRate;
