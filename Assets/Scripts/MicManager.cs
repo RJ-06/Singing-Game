@@ -38,6 +38,7 @@ public class MicManager : MonoBehaviour
             // Start recording into a looping 1-second AudioClip
             audioSource.clip = Microphone.Start(null, true, 1, sampleRate);
             audioSource.loop = true;
+            //audioSource.volume = 0;
 
             // Wait until the microphone starts recording to prevent lag spikes
             while (!(Microphone.GetPosition(null) > 0)) { }
@@ -62,7 +63,7 @@ public class MicManager : MonoBehaviour
         }
         currentNote = GetNoteFromPitch(currentPitchHz);
 
-        if(currentPitchHz != 0)Debug.Log("pitch in hz: " + currentPitchHz + ", note:" + currentNote);
+        //if(currentPitchHz != 0)Debug.Log("pitch in hz: " + currentPitchHz + ", note:" + currentNote);
     }
 
     void AnalyzePitch()
