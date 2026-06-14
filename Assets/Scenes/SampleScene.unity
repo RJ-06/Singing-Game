@@ -352,7 +352,7 @@ GameObject:
   - component: {fileID: 790292083}
   - component: {fileID: 790292082}
   m_Layer: 0
-  m_Name: Note_Seq_ABC
+  m_Name: Note_Seq_Howls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -371,12 +371,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MusicSequenceBasedLock
   noteSequence:
-  - note: A
-    duration: 0.6
-  - note: B
-    duration: 0.6
-  - note: C
-    duration: 0.6
+  - note: D
+    duration: 1
+  - note: G
+    duration: 1
+  - note: Bf
+    duration: 1
+  - note: D
+    duration: 1.3
   noteTolerance: 0.45
 --- !u!212 &790292083
 SpriteRenderer:
