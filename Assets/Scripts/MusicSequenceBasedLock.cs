@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 
 [Serializable]
@@ -15,12 +16,9 @@ public struct Note
 
 public class MusicSequenceBasedLock : MonoBehaviour
 {
-    
-    
-
-
     public Note[] noteSequence;
     [SerializeField] float noteTolerance;
+    public UnityEvent onCompletion;
     protected int indexInSequence = 0;
     private MicManager micManager;
     private Coroutine timeoutTimer;
@@ -48,7 +46,7 @@ public class MusicSequenceBasedLock : MonoBehaviour
 
             if (indexInSequence >= noteSequence.Length) //sequence completed
             {
-                OnCompletedSequence();
+                onCompletion.Invoke();
                 return;
             }
 
@@ -68,8 +66,15 @@ public class MusicSequenceBasedLock : MonoBehaviour
         }
     }
 
-    void OnCompletedSequence() 
+    public void DestroyOnComplete() 
     {
         Destroy(gameObject);
     }
+
+    public void ResetOnComplete()
+    {
+        indexInSequence = 0;
+        if(timeoutTimer == null)StopCoroutine(timeoutTimer);
+    }
+
 }
