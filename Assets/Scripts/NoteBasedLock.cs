@@ -3,18 +3,19 @@ using UnityEngine;
 public class NoteBasedLock : MonoBehaviour
 {
 
-    MicManager micManagerInstance;
+    MicManager micManager;
     [SerializeField] string noteToUnlock;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        micManagerInstance = MicManager.instance;
+        micManager = MicManager.instance;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (micManagerInstance.currentNote == noteToUnlock) 
+
+        if (MicManager.compareNotes(micManager.currentNote, noteToUnlock, 0))
         {
             Destroy(gameObject);
         }

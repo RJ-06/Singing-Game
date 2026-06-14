@@ -17,7 +17,7 @@ public class MicManager : MonoBehaviour
     private float[] spectrumData = new float[SAMPLE_SIZE];
     private int sampleRate;
 
-    public string[] notes;
+    public static string[] notes = { "A", "Bf", "B", "C", "Cs", "D", "Ef", "E", "F", "Fs", "G", "Af"};
     [SerializeField] private float volumeThreshold;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -116,5 +116,13 @@ public class MicManager : MonoBehaviour
         int placeInOctave = ((roundedSemitones % 12) + 12) % 12;
 
         return notes[placeInOctave];
+    }
+
+    public static bool compareNotes(string noteA, string noteB, int semitoneTemperance)
+    {
+        int i1 = Array.IndexOf(notes, noteA);
+        int i2 = Array.IndexOf(notes, noteB);
+        if (i1 == -1 || i2 == -1) { return false; }
+        return Mathf.Abs(i1 - i2) <= semitoneTemperance;
     }
 }
