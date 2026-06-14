@@ -35,7 +35,7 @@ public class MusicSequenceBasedLock : MonoBehaviour
         if (indexInSequence >= noteSequence.Length) return;
 
         // micManager.currentNote == noteSequence[indexInSequence].note
-        if (MicManager.compareNotes(micManager.currentNote, noteSequence[indexInSequence].note, 0))
+        if (MicManager.IsPitchCloseToNote(micManager.currentPitchHz, noteSequence[indexInSequence].note, 0.4f))
         {
             if (timeoutTimer != null) //stop previous timer if one exists
             {

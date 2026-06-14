@@ -15,7 +15,7 @@ public class NoteBasedLock : MonoBehaviour
     void Update()
     {
 
-        if (MicManager.compareNotes(micManager.currentNote, noteToUnlock, 0))
+        if (MicManager.IsPitchCloseToNote(micManager.currentPitchHz, noteToUnlock, 0.4f))
         {
             Destroy(gameObject);
         }

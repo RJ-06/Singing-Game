@@ -66,6 +66,9 @@ public class MicManager : MonoBehaviour
         //if(currentPitchHz != 0)Debug.Log("pitch in hz: " + currentPitchHz + ", note:" + currentNote);
     }
 
+    /// <summary>
+    /// Get the frequency being picked up by the mic
+    /// </summary>
     void AnalyzePitch()
     {
         // Get FFT spectrum data from the playing audio source
@@ -100,8 +103,12 @@ public class MicManager : MonoBehaviour
         }
     }
 
-
-    string GetNoteFromPitch(float pitch) 
+    /// <summary>
+    ///  Gets what note a pitch corresponds to
+    /// </summary>
+    /// <param name="pitch"> Pitch being played in hertz </param>
+    /// <returns>string representing the note, from the list: { "A", "Bf", "B", "C", "Cs", "D", "Ef", "E", "F", "Fs", "G", "Af"}</returns>
+    public static string GetNoteFromPitch(float pitch) 
     {
         if (pitch <= 0) 
         {
@@ -118,11 +125,36 @@ public class MicManager : MonoBehaviour
         return notes[placeInOctave];
     }
 
-    public static bool compareNotes(string noteA, string noteB, int semitoneTemperance)
+    /// <summary>
+    /// Check if the pitch being played is close to a target pitch, with a tolerance for being slightly off
+    /// </summary>
+    /// <param name="pitchHz">Frequency being played</param>
+    /// <param name="targetNote">The target note attempting to be played</param>
+    /// <param name="semitoneTolerance">How many fractional semitones off you are (default half a semitone)</param>
+    /// <returns>true if the notes are close, false if not</returns>
+    public static bool IsPitchCloseToNote(float pitchHz, string targetNote, float semitoneTolerance = 0.5f)
     {
-        int i1 = Array.IndexOf(notes, noteA);
-        int i2 = Array.IndexOf(notes, noteB);
-        if (i1 == -1 || i2 == -1) { return false; }
-        return Mathf.Abs(i1 - i2) <= semitoneTemperance;
+        if (pitchHz <= 0) return false;
+
+        float exactSemitones = 12f * Mathf.Log(pitchHz / 440f, 2f);
+
+        //target notes index
+        int targetIndex = Array.IndexOf(notes, targetNote);
+        if (targetIndex == -1) return false; 
+
+        // Wrap the exact semitones into a 0 to 12 continuous scale
+        float wrappedSemitones = Mathf.Repeat(exactSemitones, 12f);
+
+        // calculate distance in semitones
+        float distance = Mathf.Abs(wrappedSemitones - targetIndex);
+        if (distance > 6f)
+        {
+            distance = 12f - distance;
+        }
+
+        //check tolerance
+        return distance <= semitoneTolerance;
     }
+
+
 }
