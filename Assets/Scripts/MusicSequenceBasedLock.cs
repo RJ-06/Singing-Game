@@ -20,6 +20,7 @@ public class MusicSequenceBasedLock : MonoBehaviour
 
 
     public Note[] noteSequence;
+    [SerializeField] float noteTolerance;
     protected int indexInSequence = 0;
     private MicManager micManager;
     private Coroutine timeoutTimer;
@@ -35,7 +36,7 @@ public class MusicSequenceBasedLock : MonoBehaviour
         if (indexInSequence >= noteSequence.Length) return;
 
         // micManager.currentNote == noteSequence[indexInSequence].note
-        if (MicManager.IsPitchCloseToNote(micManager.currentPitchHz, noteSequence[indexInSequence].note, 0.4f))
+        if (MicManager.IsPitchCloseToNote(micManager.currentPitchHz, noteSequence[indexInSequence].note, noteTolerance))
         {
             if (timeoutTimer != null) //stop previous timer if one exists
             {

@@ -5,6 +5,7 @@ public class NoteBasedLock : MonoBehaviour
 
     MicManager micManager;
     [SerializeField] string noteToUnlock;
+    [SerializeField] float noteTolerance;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -15,7 +16,7 @@ public class NoteBasedLock : MonoBehaviour
     void Update()
     {
 
-        if (MicManager.IsPitchCloseToNote(micManager.currentPitchHz, noteToUnlock, 0.4f))
+        if (MicManager.IsPitchCloseToNote(micManager.currentPitchHz, noteToUnlock, noteTolerance))
         {
             Destroy(gameObject);
         }

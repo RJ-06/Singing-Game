@@ -377,6 +377,7 @@ MonoBehaviour:
     duration: 0.6
   - note: C
     duration: 0.6
+  noteTolerance: 0.45
 --- !u!212 &790292083
 SpriteRenderer:
   serializedVersion: 2
@@ -960,6 +961,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NoteBasedLock
   noteToUnlock: F
+  noteTolerance: 0.45
 --- !u!212 &1769059608
 SpriteRenderer:
   serializedVersion: 2
