@@ -49,13 +49,51 @@ public class AudiologRecorder : MonoBehaviour
         }
     }
 
+    //public void StopRecording()
+    //{
+    //    if (Microphone.devices.Length > 0) 
+    //    {
+    //        Microphone.End(null);
+    //        AudioClip clip = audioSource.clip;
+    //        recordings.Add(clip);
+    //    }
+    //}
+
     public void StopRecording()
     {
-        if (Microphone.devices.Length > 0) 
+        if (Microphone.IsRecording(null))
         {
+            int lastSamplePosition = Microphone.GetPosition(null);
             Microphone.End(null);
-            AudioClip clip = audioSource.clip;
-            recordings.Add(clip);
+
+            AudioClip originalClip = audioSource.clip;
+
+            //makes sure to edit the clip to only include the actual recording, so dead time at the end isnt included
+            if (lastSamplePosition > 0 && lastSamplePosition < originalClip.samples)
+            {
+                float[] audioData = new float[lastSamplePosition * originalClip.channels];
+
+                originalClip.GetData(audioData, 0);
+
+                AudioClip trimmedClip = AudioClip.Create("TrimmedAudiolog", lastSamplePosition, originalClip.channels, originalClip.frequency, false);
+
+                trimmedClip.SetData(audioData, 0);
+
+                recordings.Add(trimmedClip);
+
+                Destroy(originalClip);
+
+                Debug.Log($"Trimmed recording saved! Length: {trimmedClip.length} seconds.");
+            }
+            else if (lastSamplePosition > 0)
+            {
+                recordings.Add(originalClip);
+                Debug.Log($"Full-length recording saved! Length: {originalClip.length} seconds.");
+            }
+            else
+            {
+                Debug.LogWarning("Recording was too short to save.");
+            }
         }
     }
 }
