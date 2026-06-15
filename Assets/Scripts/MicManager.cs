@@ -8,17 +8,23 @@ public class MicManager : MonoBehaviour
 {
     public static MicManager instance;
 
+    [Header("Current Player Values")]
     public float currentPitchHz;
     public string currentNote;
-
+    public bool canPlay = true;
 
     private AudioSource audioSource;
     private const int SAMPLE_SIZE = 8192; // Must be a power of 2
     private float[] spectrumData = new float[SAMPLE_SIZE];
     private int sampleRate;
 
+    [Header("Tunable Values")]
     public static string[] notes = { "A", "Bf", "B", "C", "Cs", "D", "Ef", "E", "F", "Fs", "G", "Af"};
     [SerializeField] private float volumeThreshold;
+    [Tooltip("Center pitch: ie A440 which is default")]
+    public static float centerPitch = 440f;
+    [Tooltip("number of semitones playable - default of 12 is 1 scale")]
+    public static int numSemitonesPlayable = notes.Length;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
@@ -56,6 +62,8 @@ public class MicManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!canPlay) return;
+
         if (Microphone.IsRecording(null))
         {
             AnalyzePitch();
@@ -116,11 +124,11 @@ public class MicManager : MonoBehaviour
         }
 
         //12 * log2 (f/440)
-        float numSemitones = 12 * Mathf.Log((pitch / 440),2);
+        float numSemitones = numSemitonesPlayable * Mathf.Log((pitch / centerPitch),2);
 
         int roundedSemitones = Mathf.RoundToInt(numSemitones);
         //1 octave = 12 semitones
-        int placeInOctave = ((roundedSemitones % 12) + 12) % 12;
+        int placeInOctave = ((roundedSemitones % numSemitonesPlayable) + numSemitonesPlayable) % numSemitonesPlayable;
 
         return notes[placeInOctave];
     }
@@ -136,20 +144,20 @@ public class MicManager : MonoBehaviour
     {
         if (pitchHz <= 0) return false;
 
-        float exactSemitones = 12f * Mathf.Log(pitchHz / 440f, 2f);
+        float exactSemitones = numSemitonesPlayable * Mathf.Log(pitchHz / centerPitch, 2f);
 
         //target notes index
         int targetIndex = Array.IndexOf(notes, targetNote);
         if (targetIndex == -1) return false; 
 
         // Wrap the exact semitones into a 0 to 12 continuous scale
-        float wrappedSemitones = Mathf.Repeat(exactSemitones, 12f);
+        float wrappedSemitones = Mathf.Repeat(exactSemitones, numSemitonesPlayable);
 
         // calculate distance in semitones
         float distance = Mathf.Abs(wrappedSemitones - targetIndex);
         if (distance > 6f)
         {
-            distance = 12f - distance;
+            distance = numSemitonesPlayable - distance;
         }
 
         //check tolerance
